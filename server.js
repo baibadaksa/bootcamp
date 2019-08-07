@@ -3,6 +3,11 @@ import bodyParser from 'body-parser';
 import './utils/dotenv';
 import healthCheck from './routes/healthCheck';
 import homeRoute from './routes/homeRoute';
+import categoryRoute from './routes/categoryRoute';
+import commentRoute from './routes/commentRoute';
+import manufacturerRoute from './routes/manufacturerRoute';
+import productRoute from './routes/productRoute';
+import userRoute from './routes/userRoute';
 import defaultErrorHandler from './middlewares/defaultErrorHandler';
 import mysql from 'mysql';
 const connection = mysql.createConnection(
@@ -15,16 +20,9 @@ const connection = mysql.createConnection(
 try{
   connection.connect();
 } catch (err){
+  // eslint-disable-next-line no-console
   console.log(err);
 }
-connection.query('SELECT * from user', null, (error, results, fields)=>{
-  if(error){
-    console.log(error);
-  }
-  if(results){
-    console.log(results[0]);
-  }
-});
 
 const logger = require('./utils/logger')(process.env.APP_NAME);
 
@@ -34,6 +32,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(`/api/v${process.env.API_VERSION}`, healthCheck);
 app.use('/', homeRoute);
+app.use('/', userRoute);
+app.use('/', categoryRoute);
+app.use('/', manufacturerRoute);
+app.use('/', productRoute);
+app.use('/', commentRoute);
 
 app.use(defaultErrorHandler);
 
